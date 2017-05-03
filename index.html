@@ -1,1 +1,117 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>RPS-Multiplayer</title>
+		<!-- Reset Link -->
+		<link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+
+		<!-- CSS Link -->
+		<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+		<!-- Google Fonts -->
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Pacifico">
+
+		<!-- BOOTSTRAP -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	</head>
+
+	<body>
+		<div class="container">
+			<div class="well well-lg">Rock Paper Scissor</div>
+
+			<div class="row">
+				<div class="col-xs-offset-3 col-xs-6">
+					<!-- Form -->
+					<form id="target">
+  						<input type="text" id="user" placeholder="Enter Name">
+						<input type="submit" id="submit-btn" value="Submit">
+						</div id="render-name"></div>
+					</form>
+					<!-- Create a text field in place of the Form after player enters name -->
+					
+				</div>
+			</div> <!-- end row -->
+
+			<div class="row">
+				<div id="main-section">
+					<div class="col-xs-4">
+						<div class="panel panel-default">
+	  						<div class="panel-body id=right-section">
+								<h3 id="player-one-text">Waiting for Player 1</h3>
+								<div id="p1-name-text"></div>
+								<div id="p1-rock-text"></div>
+								<div id="p1-paper-text"></div>
+								<div id="p1-scissor-text"></div>
+								<div id="p1-wins-text"></div>
+								<div id="p1-loses-text"></div>
+								<div id="playerOneSaveBtn"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<div class="panel panel-default">
+	  						<div class="panel-body">A Basic Panel</div>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<div class="panel panel-default">
+	  						<div class="panel-body id=left-section">
+								<h3 id="player-two-text">Waiting for Player 2</h3>
+								<div id="p2-name-text"></div>
+								<div id="p2-rock-text"></div>
+								<div id="p2-paper-text"></div>
+								<div id="p2-scissor-text"></div>
+								<div id="p2-wins-text"></div>
+								<div id="p2-loses-text"></div>
+								<div id="playerTwoSaveBtn"></div>
+							</div>
+						</div>
+					</div>
+
+			</div> <!-- end row -->
+
+			<div class="row">
+				<div class="col-xs-offset-2 col-xs-8 col-xs-offset-2">
+					<div id="chatbox">
+						<div class="panel panel-default">
+  							<div class="panel-body">A Basic Panel</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-offset-2 col-xs-8">
+					<div class="input-group">
+    					<span class="input-group-addon">Comment</span>
+    					<input id="msg" type="text" class="form-control" name="msg" placeholder="Hello World">
+  					</div>
+				</div>
+				<div class="col-xs-2">
+					<button type="submit" class="btn btn-default">Submit</button>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- FIREBASE -->
+		<script src="https://www.gstatic.com/firebasejs/3.7.8/firebase.js"></script>
+		<script>
+		  // Initialize Firebase
+		  var config = {
+		    apiKey: "AIzaSyCxZPSu54SLERw0r1Z8_AWqCAOff08Yv7Y",
+		    authDomain: "rps-multiplayer-ee8f3.firebaseapp.com",
+		    databaseURL: "https://rps-multiplayer-ee8f3.firebaseio.com",
+		    projectId: "rps-multiplayer-ee8f3",
+		    storageBucket: "rps-multiplayer-ee8f3.appspot.com",
+		    messagingSenderId: "936726346719"
+		  };
+		  firebase.initializeApp(config);
+		</script>
+		<!-- JQUERY -->
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.js"></script>
+		<!-- JAVASCRIPT -->
+	    <script src="assets/javascript/game.js" type="text/javascript"></script>
+	</body>
+</html>
