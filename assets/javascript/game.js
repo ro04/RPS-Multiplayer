@@ -6,6 +6,7 @@ $(document).ready(function () {
     var playerName = "";
     var playerWins = 0;
     var playerLoses = 0;
+    var playingState = "";
 
     //Managers whose joining the game
     PlayingState = {
@@ -15,11 +16,11 @@ $(document).ready(function () {
     };
 
     $("form").submit(function(e) {
-        var playingState = PlayingState.Watching;
+        playingState = PlayingState.Watching;
         e.preventDefault();
         playerName = $("#user").val();
         console.log(playerName);
-        waitingToJoin(playingState);
+        waitingToJoin();
     });
  
 
@@ -36,20 +37,25 @@ $(document).ready(function () {
                 Loses: playerLoses
              });
 
-            $("#player-one-text").remove();
-            $("#user").remove();
-            $("#submit-btn").remove();
+             if(playerNum === 0) {
+                $("#player-one-text").remove();
+                $("#user").remove();
+                $("#submit-btn").remove();
+             }else{
+                $("#player-two-text").remove();
+                $("#user").remove();
+                $("#submit-btn").remove();
+             }
 
-            
         }
     //};
 
-    var waitingToJoin = function(playingState) {
+    var waitingToJoin = function() {
         // Listen on "online" location for player 0 
         gameRef.child("player0/online").on("value", function (snapshot){
             var value = snapshot.val();
             if(value === null && playingState === PlayingState.Watching) {
-                console.log(snapshot.val());
+                console.log(value);
                 tryingToJoin(0);
             }
         });
@@ -66,7 +72,7 @@ $(document).ready(function () {
 
     var tryingToJoin = function(playerNum) {
         //Set player to join a slot in the game
-        var playingState = PlayingState.Joining;
+        playingState = PlayingState.Joining;
         gameRef.child("player" + playerNum + "/online").transaction(function(snapshot){
             if(snapshot === null) {
                 return true;
