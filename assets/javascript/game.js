@@ -6,7 +6,20 @@ $(document).ready(function () {
     var playerName = "";
     var playerWins = 0;
     var playerLoses = 0;
+    var playerChoice = "";
+    //var playerChoice = "";
     var playingState = "";
+
+    var player_one_name = "";
+    var player_one_wins = 0;
+    var player_one_loses = 0;
+    var player_one_choice = "";
+
+    var player_two_name = "";
+    var player_two_wins = 0;
+    var player_two_loses = 0;
+    var player_two_choice = "";
+
 
     //Managers whose joining the game
     PlayingState = {
@@ -14,6 +27,13 @@ $(document).ready(function () {
         Joining: 1,
         Playing: 2
     };
+
+    PlayerChoice = {
+        Rock: "Rock",
+        Paper: "Paper",
+        Scissor: "Scissor"
+    }
+
 
     $("form").submit(function(e) {
         playingState = PlayingState.Watching;
@@ -28,18 +48,16 @@ $(document).ready(function () {
         gameRef.child("player0/online").on("value", function (snapshot){
             var value = snapshot.val();
             if(value === null && playingState === PlayingState.Watching) {
-                console.log(value);
                 tryingToJoin(0);
-            }
+            };
         });
 
         // Listen on "online" location for player 1
         this.gameRef.child("player1/online").on("value", function (snapshot){
             var value = snapshot.val();
             if(value === null && playingState === PlayingState.Watching) {
-                console.log(snapshot.val());
                 tryingToJoin(1);
-            }
+            };
         });
     };
 
@@ -55,33 +73,35 @@ $(document).ready(function () {
         },function(error, committed){
             if(committed){
                 playingState = PlayingState.Playing;
-                //startPlaying(playerNum);
                 syncToFirebase(playerNum);
-                //startPlaying(playerNum);
             }else{
                 playState = PlayingState.Watching;
-            }   
+            };   
         }); 
     }; 
 
     var syncToFirebase = function(playerNum) {
+        var p1_pick = "";
+        var p2_pick = "";
+
         gameRef.child('player' + playerNum + '/online').set({
             Name: playerName,
             Wins: playerWins,
-            Loses: playerLoses
+            Loses: playerLoses,
+            Choice: playerChoice
         });
 
-         //Control the players
+        //Control the players
         playerOneRef = gameRef.child('player0/online');
         playerTwoRef = gameRef.child('player1/online');
 
-
-        playerOneRef.on("value", function(playerOneSnapshot){
+         playerOneRef.on("value", function(playerOneSnapshot){
             if(playerOneSnapshot.val() !== null){
-                 //Initializing Variables
-                var player_one_name = playerOneSnapshot.val().Name;
-                var player_one_wins =  playerOneSnapshot.val().Wins;
-                var player_one_loses = playerOneSnapshot.val().Loses;
+                 
+                player_one_name = playerOneSnapshot.val().Name;
+                player_one_wins =  playerOneSnapshot.val().Wins;
+                player_one_loses = playerOneSnapshot.val().Loses;
+                player_one_choice = playerOneSnapshot.val().Choice;
                 //Remove submit button, text label, and replace "waiting for player one"
                 //with the players name
                 $("#submit-btn").remove();
@@ -93,86 +113,420 @@ $(document).ready(function () {
                 //Create the div to display player one name
                 var plNameText = $("<h4>");
                 plNameText.text(player_one_name);
-                $("#p1-name-text").append(plNameText );
+                $("#p1-name-text").html(plNameText );
 
                 //Create the div to display rock text
                 var plRockText = $("<a href='#'>");
                 plRockText.text("ROCK");
-                $("#p1-rock-text").append(plRockText);
+                $("#p1-rock-text").html(plRockText);
 
                 //Create the div to display paper text
                 var p1PaperText = $("<a href='#'>");
                 p1PaperText.text("PAPER");
-                $("#p1-paper-text").append(p1PaperText);
+                $("#p1-paper-text").html(p1PaperText);
 
                 //Create the div to display scissor text
                 var p1ScissorText = $("<a href='#'>");
                 p1ScissorText.text("SCISSOR");
-                $("#p1-scissor-text").append(p1ScissorText);
+                $("#p1-scissor-text").html(p1ScissorText);
 
                 //Create the div to display wins
                 var p1NumWins = $("<h4>");
-                //console.log(snapshot.child('Wins').val());
-                p1NumWins.text("Wins: " + player_one_wins);
-                $("#p1-wins-text").append(p1NumWins);
-    
+                p1NumWins.text("Wins: ");
+                p1NumWins.append("<span class='p1Wins'>" + player_one_wins +'</span>');
+                $("#p1-wins-text").html(p1NumWins);
+
                 //Create the div to display loses
                 var p1NumLoses = $("<h4>");
-                //console.log(snapshot.child('Loses').val());
-                p1NumLoses.text("Loses: " + player_one_loses);
-                $("#p1-loses-text").append(p1NumLoses);
-            }
-           
-        })
+                p1NumLoses.text("Loses: ");
+                p1NumLoses.append("<span class='p1Loses'>" + player_one_loses +'</span>');
+                $("#p1-loses-text").html(p1NumLoses);
+            };
+        });
            
 
         playerTwoRef.on("value", function(playerTwoSnapshot){
             if(playerTwoSnapshot.val() !== null){
-                var player_two_name = playerTwoSnapshot.val().Name;
-                var player_two_wins = playerTwoSnapshot.val().Wins;
-                var player_two_loses = playerTwoSnapshot.val().Loses;
+                player_two_name = playerTwoSnapshot.val().Name;
+                player_two_wins = playerTwoSnapshot.val().Wins;
+                player_two_loses = playerTwoSnapshot.val().Loses;
+                player_two_choice = playerTwoSnapshot.val().Choice;
+
                 $("#submit-btn").remove(); 
                 $("#user").remove();  
                 $("#player-two-text").empty(); 
                 $("#player-two-text").append("Welcome " + player_two_name + " You Are Player 2"); 
-                //*****Create the div to display info for Player One*****//
+                //*****Create the div to display info for Player Two*****//
                 //Player Two Name
                 var p2NameText = $("<h4>");
-                //console.log(snapshot.child('Name').val());
                 p2NameText.text(player_two_name);
-                $("#p2-name-text").append(p2NameText);
+                $("#p2-name-text").html(p2NameText);
+
                 //Rock Element
                 var p2RockText = $("<a href='#'>");
                 p2RockText.text("ROCK");
-                $("#p2-rock-text").append(p2RockText);
+                $("#p2-rock-text").html(p2RockText);
+
                 //Paper Element
                 var p2PaperText = $("<a href='#'>");
                 p2PaperText.text("PAPER");
-                $("#p2-paper-text").append(p2PaperText);
+                $("#p2-paper-text").html(p2PaperText);
+
                 //Scissor Element
                 var p2ScissorText = $("<a href='#'>");
                 p2ScissorText.text("SCISSOR");
-                $("#p2-scissor-text").append(p2ScissorText);
+                $("#p2-scissor-text").html(p2ScissorText);
+
                 //Number of Wins Element
                 var p2NumWins = $("<h4>");
-                p2NumWins.text("Wins: " + player_two_wins);
-                $("#p2-wins-text").append(p2NumWins);
+                p2NumWins.text("Wins: ");
+                p2NumWins.append("<span class='p2Wins'>" + player_two_wins +'</span>');
+                $("#p2-wins-text").html(p2NumWins);
+
                 //Number of Loses Element
                 var p2NumLoses = $("<h4>");
-                p2NumLoses.text("Loses: " + player_two_loses);
-                $("#p2-loses-text").append(p2NumLoses);
-            }
-        })
+                p2NumLoses.text("Loses: ");
+                p2NumLoses.append("<span class='p2Loses'>" + player_two_loses +'</span>');
+                $("#p2-loses-text").html(p2NumLoses);
 
-        startPlaying(playerOneRef, playerTwoRef);
+                /*var b = $("<h4>");
+                b.text("Player Two, please wait while Player One makes a selection");
+                $('#player-two-choice').html(b);*/
+            };
+         });
+    }
 
+        //Player One Click Events
+        $('#p1-rock-text').on("click", function(e){
+            e.preventDefault();
+            player_one_choice = PlayerChoice.Rock;
+            playerOneStartPlaying();
+        });
+
+        $('#p1-paper-text').on("click", function(e){
+            e.preventDefault();
+            player_one_choice = PlayerChoice.Paper;
+            playerOneStartPlaying();
+        });
+
+        $('#p1-scissor-text').on("click", function(e){
+            e.preventDefault();
+            player_one_choice = PlayerChoice.Scissor;
+            playerOneStartPlaying();
+        });
+
+        //Player Two Click Event
+        $('#p2-rock-text').on("click", function(e){
+            e.preventDefault();
+            player_two_choice = PlayerChoice.Rock;
+            playerTwoStartPlaying();
+        }); 
+
+        $('#p2-paper-text').on("click", function(e){
+            e.preventDefault();
+            player_two_choice = PlayerChoice.Paper;
+            playerTwoStartPlaying();
+        }); 
+
+        $('#p2-scissor-text').on("click", function(e){
+            e.preventDefault();
+            player_two_choice = PlayerChoice.Scissor;
+            playerTwoStartPlaying();
+        }); 
+    
+
+    var playerOneStartPlaying = function() {
+        //Control the players
+        playerOneRef = gameRef.child('player0/online');
+
+        //If Player One choose Rock
+        if(player_one_choice === PlayerChoice.Rock) {
+            console.log(player_one_choice);
+
+            playerOneRef.child('Choice').transaction(function(dataOneSnapshot){
+                dataOneSnapshot = player_one_choice;
+                return dataOneSnapshot;
+            });
+
+            playerOneRef.on("value", function(playerOneSnapshot){
+                var value = playerOneSnapshot.val().Choice;
+                console.log(value);
+            });
+        };
+        
+        //If Player One choose Paper
+        if(player_one_choice === PlayerChoice.Paper) {
+            console.log(player_one_choice);
+
+            playerOneRef.child('Choice').transaction(function(dataOneSnapshot){
+                dataOneSnapshot = player_one_choice;
+                return dataOneSnapshot;
+            });
+
+            playerOneRef.on("value", function(playerOneSnapshot){
+                var value = playerOneSnapshot.val().Choice;
+                console.log(value);
+            });
+        };
+
+        //If Player One choose Scissor
+        if(player_one_choice === PlayerChoice.Scissor) {
+            console.log(player_one_choice);
+
+            playerOneRef.child('Choice').transaction(function(dataOneSnapshot){
+                dataOneSnapshot = player_one_choice;
+                return dataOneSnapshot;
+            });
+
+            playerOneRef.on("value", function(playerOneSnapshot){
+                var value = playerOneSnapshot.val().Choice;
+                console.log(value);
+            });
+        };
+
+        //If Player One disconnects from the game. Clear our "online" status so somebody else can join.
+        gameRef.child("player0").child("online").onDisconnect().remove();
+
+        displayWinner();
+       
+    };// end playerOneStartPlaying
+
+    var playerTwoStartPlaying = function() {
+        playerTwoRef = gameRef.child('player1/online');
+
+        //If Plyer Two choose Rock
+        if(player_two_choice === PlayerChoice.Rock){
+            console.log(player_two_choice);
+
+            playerTwoRef.child('Choice').transaction(function(dataTwoSnapshot){
+                dataTwoSnapshot = player_two_choice;
+                return dataTwoSnapshot;
+            });
+
+            playerTwoRef.on("value", function(playerTwoSnapshot){
+                var value = playerTwoSnapshot.val().Choice;
+                console.log(value);
+            });
+        };
+
+        //If Player Two choose Paper
+        if(player_two_choice === PlayerChoice.Paper){
+            console.log(player_two_choice);
+
+            playerTwoRef.child('Choice').transaction(function(dataTwoSnapshot){
+                dataTwoSnapshot = player_two_choice;
+                return dataTwoSnapshot;
+            });
+
+            playerTwoRef.on("value", function(playerTwoSnapshot){
+                var value = playerTwoSnapshot.val().Choice;
+                console.log(value);
+            });
+        };
+
+        //If Player Two choose Scissor 
+        if(player_two_choice === PlayerChoice.Scissor){
+            console.log(player_two_choice);
+
+            playerTwoRef.child('Choice').transaction(function(dataTwoSnapshot){
+                dataTwoSnapshot = player_two_choice;
+                return dataTwoSnapshot;
+            });
+
+            playerTwoRef.on("value", function(playerTwoSnapshot){
+                var value = playerTwoSnapshot.val().Choice;
+                console.log(value);
+            });
+        };
+
+        //If Player Two disconnects from the game. Clear our "online" status so somebody else can join.
+        gameRef.child("player1").child("online").onDisconnect().remove();
+
+        displayWinner();
+    };// end playerTwoStartPlaying
+
+
+    var displayWinner = function(){
+        if(player_one_choice === "Rock" && player_two_choice === "Scissor"){
+            //Player One Wins and Player Two Loses
+            player_one_wins++;
+            player_two_loses++;
+            playerOneWins();
+         };  
+
+        if(player_one_choice === "Rock" && player_two_choice === "Paper"){
+            //Player One Loses and Player Two Wins
+            player_one_loses++;
+            player_two_wins++;
+            playerTwoWins();
+         };  
+
+        if(player_one_choice === "Rock" && player_two_choice === "Rock"){
+            //No one wins 
+            showNoWinners();
+         };  
+
+        if(player_one_choice === "Paper" && player_two_choice === "Rock"){
+            //Player One Wins and Player Two Loses
+            player_one_wins++;
+            player_two_loses++;
+            playerOneWins();
+         };  
+
+        if(player_one_choice === "Paper" && player_two_choice === "Paper"){
+            //No one wins... 
+            showNoWinners();
+         };  
+
+        if(player_one_choice === "Paper" && player_two_choice === "Scissor"){
+            //Player One Loses and Player Two Wins
+            player_one_loses++;
+            player_two_wins++;
+            playerTwoWins();
+         };  
+
+        if(player_one_choice === "Scissor" && player_two_choice === "Scissor"){
+            //No one wins... 
+            showNoWinners();
+         };  
+
+        if(player_one_choice === "Scissor" && player_two_choice === "Paper"){
+            //Player One Wins and Player Two Loses
+            player_one_wins++;
+            player_two_loses++;
+            playerOneWins();
+        };  
+
+        if(player_one_choice === "Scissor" && player_two_choice === "Rock"){
+            //Player One Loses and Player Two Wins
+            player_one_loses++;
+            player_two_wins++;
+            playerTwoWins();
+        }; 
+         
     };
 
-    var startPlaying = function(playerOneRef, playerTwoRef) {
-       this.playerOneRef = playerOneRef;
-       this.playerTwoRef = playerTwoRef;
+    var playerOneWins = function() {
+        //Control the players
+        playerOneRef = gameRef.child('player0/online');
+        playerTwoRef = gameRef.child('player1/online');  
 
-    }
-  
+        playerOneRef.child('Wins').transaction(function(dataWinSnapshot){
+            dataWinSnapshot = player_one_wins;
+            return dataWinSnapshot;
+        });  
 
-}); //end .ready 
+        playerTwoRef.child('Loses').transaction(function(dataLoseSnapshot){
+            dataLoseSnapshot = player_two_loses;
+            return dataLoseSnapshot;
+        });
+
+        showPlayerOneWon();
+     };
+
+    var playerTwoWins = function() {
+        //Control the players
+        playerOneRef = gameRef.child('player0/online');
+        playerTwoRef = gameRef.child('player1/online');  
+
+        playerOneRef.child('Loses').transaction(function(dataLoseSnapshot){
+            dataLoseSnapshot = player_one_loses;
+            return dataLoseSnapshot;
+        });  
+
+        playerTwoRef.child('Wins').transaction(function(dataWinSnapshot){
+            dataWinSnapshot = player_two_wins;
+            return dataWinSnapshot;
+        });
+
+        showPlayerTwoWon();
+    };
+
+    var showPlayerOneWon = function() {
+        var p1ChoiceTag = $("<h4>");
+        p1ChoiceTag.text("Player One, You Choose ");
+        p1ChoiceTag.append("<span class='p1ChoiceTag'>" + player_one_choice +'</span>')
+        $('#player-one-choice').append(p1ChoiceTag);
+
+        var p2ChoiceTag = $("<h4>");
+        p2ChoiceTag.text("Player Two, You choose ");
+        p2ChoiceTag.append("<span class='p2ChoiceTag'>" + player_two_choice +'</span>')
+        $('#player-two-choice').append(p2ChoiceTag);
+
+        var winnerTag = $("<h4>");
+        winnerTag.text("The Winner is Player One!");
+        $('#winner').append(winnerTag);
+
+        //setTimeout Function to remove 
+        setTimeout(function(){
+            $('#player-one-choice').empty();
+            $('#player-two-choice').empty();
+            $('#winner').empty();
+            reStartGame();
+        }, 3000);
+    };
+
+    var showPlayerTwoWon = function() {
+        var p1ChoiceTag = $("<h4>");
+        p1ChoiceTag.text("Player One, You Choose ");
+        p1ChoiceTag.append("<span class='p1ChoiceTag'>" + player_one_choice +'</span>')
+        $('#player-one-choice').append(p1ChoiceTag);
+
+        var p2ChoiceTag = $("<h4>");
+        p2ChoiceTag.text("Player Two, You choose ");
+        p2ChoiceTag.append("<span class='p2ChoiceTag'>" + player_two_choice +'</span>')
+        $('#player-two-choice').append(p2ChoiceTag);
+
+        var winnerTag = $("<h4>");
+        winnerTag.text("The Winner is Player Two!");
+        $('#winner').append(winnerTag);
+
+        //setTimeout Function to remove 
+        setTimeout(function() {
+            $('#player-one-choice').empty();
+            $('#player-two-choice').empty();
+            $('#winner').empty();
+            reStartGame();
+        }, 3000);
+    };
+
+    var showNoWinners = function() {
+        var p1ChoiceTag = $("<h4>");
+        p1ChoiceTag.text("Player One, You Choose ");
+        p1ChoiceTag.append("<span class='p1ChoiceTag'>" + player_one_choice +'</span>')
+        $('#player-one-choice').append(p1ChoiceTag);
+
+        var p2ChoiceTag = $("<h4>");
+        p2ChoiceTag.text("Player Two, You choose ");
+        p2ChoiceTag.append("<span class='p2ChoiceTag'>" + player_two_choice +'</span>')
+        $('#player-two-choice').append(p2ChoiceTag);
+
+        var winnerTag = $("<h4>");
+        winnerTag.text("It is a tie... There are no winners!");
+        $('#winner').append(winnerTag);
+
+        //setTimeout Function to remove 
+        setTimeout(function() {
+            $('#player-one-choice').empty();
+            $('#player-two-choice').empty();
+            $('#winner').empty();
+            reStartGame();
+        }, 3000);
+    };
+
+    var reStartGame = function() {
+        player_one_choice = "";
+        player_two_choice = "";
+
+        playerOneRef.child('Choice').transaction(function(dataOneSnapshot){
+            dataOneSnapshot = player_one_choice;
+            return dataOneSnapshot;
+        });
+
+        playerTwoRef.child('Choice').transaction(function(dataTwoSnapshot){
+            dataTwoSnapshot = player_two_choice;
+            return dataTwoSnapshot;
+        });
+    };
+
+}); //end .ready() 
