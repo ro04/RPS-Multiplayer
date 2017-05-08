@@ -22,4 +22,4 @@ Things to do:
 
 4. Disconnect function is not working properly. Troubleshoot and correct.
 
-5. Work on the layout. Make it mobil friendly. Add color, etc. 
+5. Work on the layout. Make it mobile friendly. Add color, etc. 
