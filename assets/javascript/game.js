@@ -115,28 +115,28 @@ $(document).ready(function () {
                 plNameText.text(player_one_name);
                 $("#p1-name-text").html(plNameText );
 
-                //Create the div to display rock text
+                //Create the div to display player one rock text
                 var plRockText = $("<a href='#'>");
                 plRockText.text("ROCK");
                 $("#p1-rock-text").html(plRockText);
 
-                //Create the div to display paper text
+                //Create the div to display player one paper text
                 var p1PaperText = $("<a href='#'>");
                 p1PaperText.text("PAPER");
                 $("#p1-paper-text").html(p1PaperText);
 
-                //Create the div to display scissor text
+                //Create the div to display player on scissor text
                 var p1ScissorText = $("<a href='#'>");
                 p1ScissorText.text("SCISSOR");
                 $("#p1-scissor-text").html(p1ScissorText);
 
-                //Create the div to display wins
+                //Create the div to display player one wins
                 var p1NumWins = $("<h4>");
                 p1NumWins.text("Wins: ");
                 p1NumWins.append("<span class='p1Wins'>" + player_one_wins +'</span>');
                 $("#p1-wins-text").html(p1NumWins);
 
-                //Create the div to display loses
+                //Create the div to display player one loses
                 var p1NumLoses = $("<h4>");
                 p1NumLoses.text("Loses: ");
                 p1NumLoses.append("<span class='p1Loses'>" + player_one_loses +'</span>');
@@ -162,28 +162,28 @@ $(document).ready(function () {
                 p2NameText.text(player_two_name);
                 $("#p2-name-text").html(p2NameText);
 
-                //Create the div to display Rock Element
+                //Create the div to display player two Rock Element
                 var p2RockText = $("<a href='#'>");
                 p2RockText.text("ROCK");
                 $("#p2-rock-text").html(p2RockText);
 
-                //Create the div to display Paper Element
+                //Create the div to display player two Paper Element
                 var p2PaperText = $("<a href='#'>");
                 p2PaperText.text("PAPER");
                 $("#p2-paper-text").html(p2PaperText);
 
-                //Create the div to display Scissor Element
+                //Create the div to display player two Scissor Element
                 var p2ScissorText = $("<a href='#'>");
                 p2ScissorText.text("SCISSOR");
                 $("#p2-scissor-text").html(p2ScissorText);
 
-                //Create the div to display Number of Wins Element
+                //Create the div to display player two Number of Wins Element
                 var p2NumWins = $("<h4>");
                 p2NumWins.text("Wins: ");
                 p2NumWins.append("<span class='p2Wins'>" + player_two_wins +'</span>');
                 $("#p2-wins-text").html(p2NumWins);
 
-                //Create the div to display Number of Loses Element
+                //Create the div to display player two Number of Loses Element
                 var p2NumLoses = $("<h4>");
                 p2NumLoses.text("Loses: ");
                 p2NumLoses.append("<span class='p2Loses'>" + player_two_loses +'</span>');
@@ -200,44 +200,45 @@ $(document).ready(function () {
         $('#p1-rock-text').on("click", function(e){
             e.preventDefault();
             player_one_choice = PlayerChoice.Rock;
-            playerOneStartPlaying();
+            startPlaying();
         });
 
         $('#p1-paper-text').on("click", function(e){
             e.preventDefault();
             player_one_choice = PlayerChoice.Paper;
-            playerOneStartPlaying();
+            startPlaying();
         });
 
         $('#p1-scissor-text').on("click", function(e){
             e.preventDefault();
             player_one_choice = PlayerChoice.Scissor;
-            playerOneStartPlaying();
+            startPlaying();
         });
 
         //*****Player Two Click Event*****??
         $('#p2-rock-text').on("click", function(e){
             e.preventDefault();
             player_two_choice = PlayerChoice.Rock;
-            playerTwoStartPlaying();
+            startPlaying();
         }); 
 
         $('#p2-paper-text').on("click", function(e){
             e.preventDefault();
             player_two_choice = PlayerChoice.Paper;
-            playerTwoStartPlaying();
+            startPlaying();
         }); 
 
         $('#p2-scissor-text').on("click", function(e){
             e.preventDefault();
             player_two_choice = PlayerChoice.Scissor;
-            playerTwoStartPlaying();
+            startPlaying();
         }); 
     
 
-    var playerOneStartPlaying = function() {
+    var startPlaying = function() {
         //Control the players
         playerOneRef = gameRef.child('player0/online');
+        playerTwoRef = gameRef.child('player1/online');
 
         //If Player One choose Rock
         if(player_one_choice === PlayerChoice.Rock) {
@@ -284,20 +285,6 @@ $(document).ready(function () {
             });
         };
 
-        //If Player One disconnects from the game. Clear our "online" status so somebody else can join.
-        gameRef.child("player0").child("online").onDisconnect().remove();
-
-        //setTimeout Function to call display winner for both player one and player two
-        /*setTimeout(function() {
-            calculateWinner();
-        }, 3000);*/
-
-       
-    };// end playerOneStartPlaying
-
-    var playerTwoStartPlaying = function() {
-        playerTwoRef = gameRef.child('player1/online');
-
         //If Plyer Two choose Rock
         if(player_two_choice === PlayerChoice.Rock){
             console.log(player_two_choice);
@@ -343,13 +330,10 @@ $(document).ready(function () {
             });
         };
 
+        //If Player One disconnects from the game. Clear our "online" status so somebody else can join.
+        gameRef.child("player0").child("online").onDisconnect().remove();
         //If Player Two disconnects from the game. Clear our "online" status so somebody else can join.
         gameRef.child("player1").child("online").onDisconnect().remove();
-
-        //setTimeout Function to display winner for both player one and player two
-        /*setTimeout(function() {
-            calculateWinner();
-        }, 1000);*/
 
         calculateWinner();
 
@@ -525,6 +509,14 @@ $(document).ready(function () {
     };
 
     var reStartGame = function() {
+        $('#p1-rock-text').show();
+        $('#p1-paper-text').show();
+        $('#p1-scissor-text').show();
+
+        $('#p2-rock-text').show();
+        $('#p2-paper-text').show();
+        $('#p2-scissor-text').show();
+
         player_one_choice = "";
         player_two_choice = "";
 
@@ -537,6 +529,7 @@ $(document).ready(function () {
             dataTwoSnapshot = player_two_choice;
             return dataTwoSnapshot;
         });
+
     };
 
 }); //end .ready() 
