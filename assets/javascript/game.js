@@ -535,4 +535,43 @@ $(document).ready(function () {
 
     };
 
+
+    //********** CHAT **********/
+
+    //submitting a chat
+    var showChats = function(snapshot){
+        var chatMsg = snapshot.val();
+
+        // Only show messages sent in the last 30 minutes
+        if(Date.now() - chatMsg.timestamp < 1800000) {
+            var messageDiv = $('<div class="message">');
+            messageDiv.html('<span class="sender">' + chatMsg.sender + '</span>: ' + chatMsg.message);
+            $('#chatbox').append(messageDiv);
+        };
+    };
+
+    $('#chat-btn').on('click', function() {
+        var msg = $('#message');
+        var chatObj = {
+            message: msg.val(),
+            sender: playerName,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        gameRef.child('chat').push(chatObj);
+
+        //Clear message input
+        msg.val("");
+
+        return false;
+    });
+
+    //Database listening function for chat
+    gameRef.child('chat').on('child_added', function(snapshot){
+        if(snapshot.val()){
+            showChats(snapshot);
+        };
+    });
+    
+    
 }); //end .ready() 
