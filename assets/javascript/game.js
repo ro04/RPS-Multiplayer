@@ -335,7 +335,10 @@ $(document).ready(function () {
         //If Player Two disconnects from the game. Clear our "online" status so somebody else can join.
         gameRef.child("player1").child("online").onDisconnect().remove();
 
-        calculateWinner();
+        //check if both players have made a selection, call calculateWinner()
+        if(player_one_choice !== "" && player_two_choice !== ""){
+            calculateWinner();
+        }
 
     };// end playerTwoStartPlaying
 
