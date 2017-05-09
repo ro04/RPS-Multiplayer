@@ -18,8 +18,6 @@ Things to do:
 
 2. Hide links after player picks, show buttons before next round is played. 
 
-3. Instant messaging currently does not work.
+3. Disconnect function is not working properly. Troubleshoot and correct.
 
-4. Disconnect function is not working properly. Troubleshoot and correct.
-
-5. Work on the layout. Make it mobile friendly. Add color, etc. 
+4. Work on the layout. Make it mobile friendly. Add color, etc. 

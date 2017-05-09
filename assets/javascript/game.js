@@ -91,6 +91,12 @@ $(document).ready(function () {
             Choice: playerChoice
         });
 
+        //If Player One disconnects from the game. Clear our "online" status so somebody else can join.
+        gameRef.child("player0").child("online").onDisconnect().remove();
+
+        //If Player Two disconnects from the game. Clear our "online" status so somebody else can join.
+        gameRef.child("player1").child("online").onDisconnect().remove();    
+
         //Control the players
         playerOneRef = gameRef.child('player0/online');
         playerTwoRef = gameRef.child('player1/online');
@@ -141,6 +147,8 @@ $(document).ready(function () {
                 p1NumLoses.text("Loses: ");
                 p1NumLoses.append("<span class='p1Loses'>" + player_one_loses +'</span>');
                 $("#p1-loses-text").html(p1NumLoses);
+
+         
             };
         });
            
@@ -188,6 +196,7 @@ $(document).ready(function () {
                 p2NumLoses.text("Loses: ");
                 p2NumLoses.append("<span class='p2Loses'>" + player_two_loses +'</span>');
                 $("#p2-loses-text").html(p2NumLoses);
+
 
                 /*var b = $("<h4>");
                 b.text("Player Two, please wait while Player One makes a selection");
@@ -329,11 +338,6 @@ $(document).ready(function () {
                 console.log(value);
             });
         };
-
-        //If Player One disconnects from the game. Clear our "online" status so somebody else can join.
-        gameRef.child("player0").child("online").onDisconnect().remove();
-        //If Player Two disconnects from the game. Clear our "online" status so somebody else can join.
-        gameRef.child("player1").child("online").onDisconnect().remove();
 
         //check if both players have made a selection, call calculateWinner()
         if(player_one_choice !== "" && player_two_choice !== ""){
