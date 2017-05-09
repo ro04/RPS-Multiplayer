@@ -1,3 +1,5 @@
+This site is published at https://ro04.github.io/RPS-Multiplayer
+
 Instructions:
 
 Create a game that suits this user story:
@@ -16,8 +18,10 @@ Styling and theme are completely up to you. Get Creative!
 Things to do:
 1. Only the last player to pick can see who won. Make it so both players will be able to see who won at the same time.
 
-2. Hide links after player picks, show buttons before next round is played. 
+2. Hide links after player picks, display links after round has ended. 
 
-3. Disconnect function is not working properly. Troubleshoot and correct.
+3. Disconnect function is not working properly. When one player disconnects, both are removed from the database.
 
 4. Work on the layout. Make it mobile friendly. Add color, etc. 
+
+5. Set a timer for players to make a pick. 
